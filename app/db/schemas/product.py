@@ -11,7 +11,7 @@ class ProductBase(BaseModel):
 class ProductCreate(ProductBase):
     category_id: UUID
 
-class ProductUpdate(ProductBase):
+class ProductResponse(ProductBase):
     id: UUID
     category_id: UUID
 

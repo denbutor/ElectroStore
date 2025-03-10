@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
+from app.core.security import get_current_user
+from app.db.schemas.user import UserResponse
+
 router = APIRouter()
 
 @router.get('/dashboard')

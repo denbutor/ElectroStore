@@ -7,6 +7,8 @@ from app.core.config import settings
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
 
+from app.db.session import get_db
+
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     credentials_exception = HTTPException(

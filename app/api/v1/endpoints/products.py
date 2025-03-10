@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.db.schemas.product import ProductResponse, ProductCreate
+from app.db.session import get_db
+from app.services.products import ProductService
+
 router = APIRouter()
 
 product_service = ProductService()

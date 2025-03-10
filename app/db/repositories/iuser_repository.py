@@ -3,6 +3,7 @@ from abc import abstractmethod, ABC
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.user import User
+from app.db.schemas.user import UserCreate
 
 
 class IUserRepository(ABC):

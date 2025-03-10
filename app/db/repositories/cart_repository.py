@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.cart_item import CartItem
 from app.db.repositories.icart_repository import ICartRepository
+from app.db.schemas.cart_item import CartItemCreate
 
 
 class CartRepository(ICartRepository):

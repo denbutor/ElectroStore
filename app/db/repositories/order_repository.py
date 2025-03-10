@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.order import Order
 from app.db.repositories.iorder_repository import IOrderRepository
+from app.db.schemas.order import OrderCreate
 
 
 class OrderRepository(IOrderRepository):

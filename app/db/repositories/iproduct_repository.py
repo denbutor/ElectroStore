@@ -3,6 +3,7 @@ from abc import abstractmethod, ABC
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.product import Product
+from app.db.schemas.product import ProductCreate
 
 
 class IProductRepository(ABC):
