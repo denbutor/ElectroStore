@@ -5,10 +5,18 @@ from sqlalchemy.testing.pickleable import User
 from starlette import status
 from app.core.config import settings
 from jose import JWTError, jwt
-from fastapi.security import OAuth2PasswordBearer
-
 from app.db.session import get_db
+from app.services.auth import oauth2_scheme
+from passlib.context import CryptContext
 
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     credentials_exception = HTTPException(

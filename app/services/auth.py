@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
-
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
-
+import jwt
 from app.core.config import settings
 from app.db.repositories.user_repository import UserRepository
 

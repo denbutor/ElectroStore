@@ -1,6 +1,4 @@
 import random
-
-from app.db.models.product import Product
 from app.db.schemas.product import ProductCreate
 
 

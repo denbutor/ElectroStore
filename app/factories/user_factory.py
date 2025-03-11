@@ -1,7 +1,4 @@
 from random import random
-
-from pip._internal.resolution.resolvelib import factory
-
 from app.db.schemas.user import UserCreate
 
 
