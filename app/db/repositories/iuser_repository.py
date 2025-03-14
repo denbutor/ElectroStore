@@ -12,5 +12,10 @@ class IUserRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_user_by_id(self, db: AsyncSession, user_id: str) -> User | None:
+        pass
+
+    @abstractmethod
     async def get_user_by_email(self, db: AsyncSession, email: str) -> User | None:
         pass
+

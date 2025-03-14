@@ -11,9 +11,10 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = "electrostore"
     DATABASE_URL: str = (
         f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")
+    REDIS_URL: str = "redis://localhost:6379"
 
-    SECRET_KEY: str = 'secret'
-    ALGORITHM: str = 'HS256'
+    JWT_SECRET: str = 'secret'
+    JWT_ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
 settings = Settings()

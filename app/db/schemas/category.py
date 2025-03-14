@@ -10,7 +10,7 @@ class CategoryCreate(CategoryBase):
     pass
 
 class CategoryResponse(CategoryBase):
-    id: UUID
+    id: int
 
     class Config:
         from_attributes = True

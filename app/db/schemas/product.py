@@ -9,11 +9,11 @@ class ProductBase(BaseModel):
     price: condecimal(max_digits=10, decimal_places=2)
 
 class ProductCreate(ProductBase):
-    category_id: UUID
+    category_id: int
 
 class ProductResponse(ProductBase):
-    id: UUID
-    category_id: UUID
+    id: int
+    category_id: int
 
     class Config:
         from_attributes = True

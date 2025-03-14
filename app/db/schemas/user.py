@@ -1,17 +1,26 @@
-from uuid import UUID
-
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserBase(BaseModel):
     email: EmailStr
-    full_name: str
 
 class UserCreate(UserBase):
-    password: str
+    name: str
+    surname: str
+    phone_number: str = Field(min_length=10, max_length=13)
+    city: str
+    nova_post_department: str
+    password: str = Field(min_length=8)
+    class Config:
+        from_attributes = True
 
 class UserResponse(UserBase):
-    id: UUID
+    id: int
 
     class Config:
         from_attributes = True
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserResponse

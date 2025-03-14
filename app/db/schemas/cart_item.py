@@ -4,15 +4,15 @@ from pydantic import BaseModel
 
 
 class CartItemBase(BaseModel):
-    product_id: UUID
+    product_id: int
     quantity: int
 
 class CartItemCreate(CartItemBase):
-    user_id: UUID
+    user_id: int
 
 class CartItemResponse(CartItemBase):
-    id: UUID
-    user_id: UUID
+    id: int
+    user_id: int
 
     class Config:
         from_attributes = True

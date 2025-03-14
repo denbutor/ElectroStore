@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
-from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
-import jwt
+from jose import jwt
 from app.core.config import settings
 from app.db.repositories.user_repository import UserRepository
 
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class AuthService:
     def __init__(self, user_repo: UserRepository):
@@ -27,6 +26,6 @@ class AuthService:
 
     async def authenticate_user(self, db: AsyncSession, email: str, password: str):
         user = await self.user_repo.get_user_by_email(db, email)
-        if not user or not user.verify_password(password, user.hashed_password):
+        if not user or not await self.verify_password(password, user.hashed_password):
             return None
         return await self.create_access_token({"sub": user.email})

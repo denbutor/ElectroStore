@@ -6,18 +6,18 @@ from pydantic import BaseModel
 
 
 class OrderItem(BaseModel):
-    product_id: UUID
+    product_id: int
     quantity: int
 
 class OrderBase(BaseModel):
-    user_id: UUID
+    user_id: int
     items: List[OrderItem]
 
 class OrderCreate(OrderBase):
     pass
 
 class OrderResponse(OrderBase):
-    id: UUID
+    id: int
     created_at: datetime
 
     class Config:
