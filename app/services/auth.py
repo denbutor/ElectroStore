@@ -1,15 +1,18 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from typing import TYPE_CHECKING
+
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import jwt
 from app.core.config import settings
-from app.db.repositories.user_repository import UserRepository
 
+if TYPE_CHECKING:
+    from app.db.repositories.user_repository import UserRepository
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class AuthService:
-    def __init__(self, user_repo: UserRepository):
+    def __init__(self, user_repo):
         self.user_repo = user_repo
 
     async def hash_password(self, password: str) -> str:
@@ -20,7 +23,7 @@ class AuthService:
 
     async def create_access_token(self, data: dict, expires_delta: timedelta = timedelta(hours=1)) -> str:
         to_encode = data.copy()
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 

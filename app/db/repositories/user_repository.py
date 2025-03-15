@@ -6,27 +6,22 @@ from typing import Optional
 from app.db.schemas.user import UserCreate
 from app.core.security import hash_password
 from app.factories.user_factory import UserFactory
+from app.services.auth import AuthService
 
 
 class UserRepository(IUserRepository):
-    async def create_user(self, db: AsyncSession, user_data: UserCreate) -> User:
-        hashed_password = hash_password(user_data.password)
+
+    async def create_user(self, db: AsyncSession, user_data: UserCreate, auth_service: AuthService) -> User:
+        hashed_password = await auth_service.hash_password(user_data.password)
         user_data_dict = user_data.model_dump()
-        user_data_dict["password"] = hashed_password  # Замінюємо пароль на хешований
+        user_data_dict["hashed_password"] = hashed_password
+        del user_data_dict["password"]
 
-        new_user = User(**user_data_dict)  # Використовуємо SQLAlchemy-модель User
-
+        new_user = User(**user_data_dict)
         db.add(new_user)
         await db.commit()
         await db.refresh(new_user)
         return new_user
-
-    # async def create_user(self, db: AsyncSession, user_data: dict) -> User:
-    #     new_user = User(**user_data)  # Створюємо об'єкт User з правильним полем
-    #     db.add(new_user)
-    #     await db.commit()
-    #     await db.refresh(new_user)
-    #     return new_user
 
     async def get_user_by_id(self, db: AsyncSession, user_id: str) ->  User | None:
         result = await db.execute(select(User).where(User.id == user_id))

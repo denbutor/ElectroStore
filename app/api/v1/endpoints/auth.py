@@ -13,7 +13,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 user_repo = UserRepository()
 # auth_service = AuthService()
 def get_auth_service(db: AsyncSession = Depends(get_db)) -> AuthService:
-    return AuthService(user_repo=UserResponse)
+    return AuthService(user_repo=user_repo)
+
 user_service = UserService(user_repo)
 
 
@@ -23,15 +24,14 @@ async def register(
         db: AsyncSession = Depends(get_db),
         auth_service: AuthService = Depends(get_auth_service)
 ):
-    user = await user_service.create_user(db, user_data, auth_service)  # Передаємо auth_service в метод
+    user = await user_service.create_user(db, user_data, auth_service)
     token = await auth_service.create_access_token({"sub": user.email})
     await save_token(user.id, token)
 
-    # Повертаємо і користувача, і токен
     return AuthResponse(
         access_token=token,
         token_type="bearer",
-        user=user  # Повертаємо інформацію про користувача
+        user=user
     )
 
 @router.post("/login", response_model=UserResponse)
@@ -46,7 +46,7 @@ async def login(
 
     token = await auth_service.create_access_token({"sub": user.email})
     await save_token(user.id, token)
-    return {"access_token": token, "token_type": "bearer"}
+    return AuthResponse(access_token=token, token_type="bearer", user=UserResponse.model_validate(user))
 
 @router.get("/logout")
 async def logout(user_id: str):

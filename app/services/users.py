@@ -10,19 +10,16 @@ class UserService:
         self.user_repo = user_repo
 
     async def create_user(self, db: AsyncSession, user_data: UserCreate, auth_service: AuthService) -> UserResponse:
-        """Реєстрація користувача через переданий AuthService"""
-        # user_data.password = hashed_password
         hashed_password = await auth_service.hash_password(user_data.password)
-        user_dict = user_data.model_dump()
-        user_dict["hashed_password"] = hashed_password
-        del user_dict["password"]
+        user_data_dict = user_data.model_dump()
+        user_data_dict["hashed_password"] = hashed_password
 
-        new_user = await self.user_repo.create_user(db, user_dict)
-        return UserResponse.from_orm(new_user)
+        new_user = await self.user_repo.create_user(db, UserCreate(**user_data_dict), auth_service)
+        return UserResponse.model_validate(new_user)
 
     @requires_auth
     async def get_user(self, db: AsyncSession, user_id: str) -> UserResponse:
         user = await self.user_repo.get_user_by_id(db, user_id)
         if not user:
             raise NotFoundUserException()
-        return UserResponse.from_orm(user)
+        return UserResponse.model_validate(user)
