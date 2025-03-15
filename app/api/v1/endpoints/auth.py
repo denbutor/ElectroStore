@@ -31,10 +31,10 @@ async def register(
     return AuthResponse(
         access_token=token,
         token_type="bearer",
-        user=user
+        user=UserResponse.model_validate(user)
     )
 
-@router.post("/login", response_model=UserResponse)
+@router.post("/login", response_model=AuthResponse)
 async def login(
         user_data: UserCreate,
         db: AsyncSession = Depends(get_db),
