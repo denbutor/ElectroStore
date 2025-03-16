@@ -6,6 +6,9 @@ redis_client = None  # Уникаємо конфлікту назв змінни
 async def get_redis():
     global redis_client
     if redis_client is None:
-        redis_client = redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
+        redis_client = redis.Redis.from_url(
+            settings.REDIS_URL,
+            decode_responses=True
+        )
 
     return redis_client

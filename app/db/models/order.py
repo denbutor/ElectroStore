@@ -8,6 +8,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    # cart_item_id = Column(Integer, ForeignKey('cart_item.id'), nullable=False)
     total_price = Column(Numeric(10, 2), nullable=False)
     status = Column(Integer, default="active", nullable=False)
     created_at = Column(DateTime, nullable=False, server_default=func.now())

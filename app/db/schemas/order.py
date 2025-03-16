@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class OrderItem(BaseModel):
     product_id: int
-    quantity: int
+    # quantity: int
 
 class OrderBase(BaseModel):
     user_id: int
