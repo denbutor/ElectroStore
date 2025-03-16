@@ -1,9 +1,12 @@
 # from sqlalchemy import Enum as SQLAlchemyEnum
 from enum import Enum
 from sqlalchemy import Column, String, Integer, Enum as SQLEnum
+from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
+# Base = declarative_base()
 
 class UserRole(str, Enum):
     client = "client"
