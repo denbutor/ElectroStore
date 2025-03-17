@@ -7,9 +7,11 @@ from app.services.categories import CategoryService
 
 router = APIRouter()
 
+category_repo=CategoryRepository()
+
 # Функція для створення CategoryService
 def get_category_service(db: AsyncSession = Depends(get_db)) -> CategoryService:
-    return CategoryService(category_repo=CategoryRepository(db))
+    return CategoryService(category_repo=category_repo)
 
 @router.get("/", response_model=list[CategoryResponse])
 async def get_categories(

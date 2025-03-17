@@ -19,7 +19,7 @@ async def add_item_to_cart(
         db: AsyncSession = Depends(get_db),
         cart_service: CartService = Depends(get_cart_service),
 ):
-    cart_item = await cart_service.add_item(cart_item_data)
+    cart_item = await cart_service.add_to_cart(cart_item_data)
     await add_to_cart(cart_item_data.user_id, cart_item_data.product_id, cart_item_data.quantity)
     return cart_item, {"message": "Item added to cart."}
 
@@ -28,5 +28,5 @@ async def get_user_cart(
         user_id: str,
         cart_service: CartService = Depends(get_cart_service),
 ):
-    cart_items = await cart_service.get_cart(user_id)
+    cart_items = await cart_service.get_cart_items(user_id)
     return cart_items

@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.security import get_current_user
 from app.db.repositories import product_repository
 from app.db.repositories.product_repository import ProductRepository
 from app.db.schemas.product import ProductResponse, ProductCreate
+from app.db.schemas.user import UserResponse
 from app.db.session import get_db
+from app.exceptions import ForbiddenException
 from app.services.caches.product_cache import get_cached_products, cache_products
 from app.services.products import ProductService
 
@@ -48,7 +51,11 @@ def get_product_service(db: AsyncSession = Depends(get_db)) -> ProductService:
 async def create_product(
     product_data: ProductCreate,
     product_service: ProductService = Depends(get_product_service),
+    current_user: UserResponse = Depends(get_current_user)
 ):
+    if current_user.role != "admin":
+        raise ForbiddenException()
+
     product = await product_service.create(product_data)
     await cache_products(await product_service.get_products())
     return product

@@ -4,7 +4,7 @@ from hashlib import sha256
 from fastapi import Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.testing.pickleable import User
+from app.db.models.user import User
 from starlette import status
 from app.core.config import settings
 from jose import JWTError, jwt

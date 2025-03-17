@@ -21,8 +21,8 @@ class ProductService:
 #------------------------------------------------------------------------
 
     @requires_admin
-    async def create(self, db: AsyncSession, product_data: ProductCreate):
-        return await self.product_repo.create_product(db, product_data)
+    async def create(self, product_data: ProductCreate):
+        return await self.product_repo.create_product(self.db, product_data)
 
     async def get_products(self, db: AsyncSession):
         return await self.product_repo.get_products(db)

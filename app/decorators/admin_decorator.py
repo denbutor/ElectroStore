@@ -11,10 +11,11 @@ from app.exceptions import NotAuthException, ForbiddenException
 
 def requires_admin(func):
     @wraps(func)
-    async def wrapper(*args, current_user: UserResponse = Depends(get_current_user), **kwargs):
+    async def wrapper(*args, **kwargs):
+        current_user: UserResponse = await get_current_user()
         if current_user.role != 'admin':
-            raise ForbiddenException  # Використовуємо ваш клас винятку
+            raise ForbiddenException
 
-        return await func(*args, **kwargs)  # Викликаємо оригінальну функцію
+        return await func(*args, **kwargs)
 
     return wrapper

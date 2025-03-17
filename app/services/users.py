@@ -3,7 +3,7 @@ from app.db.repositories.user_repository import UserRepository
 from app.db.schemas.user import UserCreate, UserResponse
 from app.decorators.auth_decorator import requires_auth
 from app.exceptions import NotFoundUserException
-from app.services.auth import AuthService
+from app.core.auth import AuthService
 
 class UserService:
     def __init__(self, user_repo: UserRepository):
