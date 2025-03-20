@@ -25,7 +25,7 @@ async def add_item_to_cart(
 
 @router.get('/', response_model=dict)
 async def get_user_cart(
-        user_id: str,
+        user_id: int,
         cart_service: CartService = Depends(get_cart_service),
 ):
     cart_items = await cart_service.get_cart_items(user_id)

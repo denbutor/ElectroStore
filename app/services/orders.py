@@ -13,5 +13,5 @@ class OrderService:
         return await self.order_repo.create_order(db, order_data)
 
     @requires_admin
-    async def get_orders(self, db: AsyncSession, user_id: str):
+    async def get_orders(self, db: AsyncSession, user_id: int):
         return await self.order_repo.get_orders(db, user_id)

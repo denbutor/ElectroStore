@@ -18,7 +18,7 @@ class UserService:
         return UserResponse.model_validate(new_user)
 
     @requires_auth
-    async def get_user(self, db: AsyncSession, user_id: str) -> UserResponse:
+    async def get_user(self, db: AsyncSession, user_id: int) -> UserResponse:
         user = await self.user_repo.get_user_by_id(db, user_id)
         if not user:
             raise NotFoundUserException()

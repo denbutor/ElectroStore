@@ -20,7 +20,7 @@ async def create_order(
 
 @router.get("/order", response_model=list[OrderResponse])
 async def get_user_order(
-        user_id: str,
+        user_id: int,
         order_service: OrderService = Depends(get_product_service),
 ):
     return await order_service.get_orders(user_id)

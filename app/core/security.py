@@ -33,7 +33,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     # credentials_exception = NotValidCredentialsException()
     try:
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
-        user_id: str = payload.get("sub")
+        user_id: int = payload.get("sub")
         if not user_id:
             raise credentials_exception
     except JWTError:
