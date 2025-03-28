@@ -43,6 +43,10 @@ class UserRepository:
         return result.scalars().first()
 
     @staticmethod
+    async def get_user_by_id(db: AsyncSession, user_id: int):
+        return db.query(User).filter(User.id == user_id).first()
+
+    @staticmethod
     async def create_user(db: AsyncSession, user: User) -> User:
         db.add(user)
         await db.commit()

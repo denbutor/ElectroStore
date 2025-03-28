@@ -99,7 +99,7 @@ from app.db.session import get_db
 
 router = APIRouter()
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=UserResponse, status_code=200)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     auth_service = AuthService(db)
     existing_user = await UserRepository.get_user_by_email(db, user_data.email)
@@ -118,7 +118,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = auth_service.create_access_token(data={"sub": user.email})
+    # access_token = auth_service.create_access_token(data={"sub": user.email})
+    access_token = auth_service.create_access_token(data={"sub": user.id})
     return {"access_token": access_token, "token_type": "bearer", "user": user}
 
 @router.post("/token", response_model=AuthResponse)
@@ -131,5 +132,6 @@ async def get_token(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncS
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = auth_service.create_access_token(data={"sub": user.email})
+    # access_token = auth_service.create_access_token(data={"sub": user.email})
+    access_token = auth_service.create_access_token(data={"sub": user.id})
     return {"access_token": access_token, "token_type": "bearer", "user": user}

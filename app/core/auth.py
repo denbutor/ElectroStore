@@ -60,19 +60,25 @@
 # #     if not user:
 # #         raise credentials_exception
 # #     return user
-
+from fastapi import HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
+from app.db.base import get_db
 from app.db.models.user import User
 from app.db.repositories.user_repository import UserRepository
 from app.db.schemas.user import UserCreate
 from app.core.config import settings
+# from app.core.config import Settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 class AuthService:
     def __init__(self, db: AsyncSession):
@@ -109,6 +115,37 @@ class AuthService:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
             expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-        to_encode.update({"exp": expire})
+        # to_encode.update({"exp": expire})
+        to_encode.update({"exp": expire, "sub": str(data["sub"]), "role": data.get("role", "user")})
         encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
         return encoded_jwt
+
+
+
+
+    # def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    #     credentials_exception = HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Could not validate credentials",
+    #         headers={"WWW-Authenticate": "Bearer"},
+    #     )
+    #     try:
+    #         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+    #         user_id: int = payload.get("sub")
+    #         if user_id is None:
+    #             raise credentials_exception
+    #     except JWTError:
+    #         raise credentials_exception
+    #
+    #     user = db.query(User).filter(User.id == user_id).first()
+    #     if user is None:
+    #         raise credentials_exception
+    #     return user
+    #
+    # def admin_required(current_user: User = Depends(get_current_user)):
+    #     if current_user.role != "admin":
+    #         raise HTTPException(
+    #             status_code=status.HTTP_403_FORBIDDEN,
+    #             detail="You don't have enough permissions"
+    #         )
+    #     return current_user

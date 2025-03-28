@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.repositories.user_repository import UserRepository
 from app.db.schemas.user import UserCreate, UserResponse
-from app.decorators.auth_decorator import requires_auth
+# from app.decorators.auth_decorator import requires_auth
 from app.exceptions import NotFoundUserException
 from app.core.auth import AuthService
 
@@ -17,7 +17,7 @@ class UserService:
         new_user = await self.user_repo.create_user(db, UserCreate(**user_data_dict), auth_service)
         return UserResponse.model_validate(new_user)
 
-    @requires_auth
+    # @requires_auth
     async def get_user(self, db: AsyncSession, user_id: int) -> UserResponse:
         user = await self.user_repo.get_user_by_id(db, user_id)
         if not user:

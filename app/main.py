@@ -25,6 +25,11 @@ def custom_openapi():
         description="Документація API для магазину електроніки",
         routes=app.routes,
     )
+    if "components" not in openapi_schema:
+        openapi_schema["components"] = {}
+
+    if "securitySchemes" not in openapi_schema["components"]:
+        openapi_schema["components"]["securitySchemes"] = {}
     openapi_schema["components"]["securitySchemes"]["OAuth2PasswordBearer"] = {
         "type": "oauth2",
         "flows": {

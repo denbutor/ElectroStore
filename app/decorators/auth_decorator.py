@@ -8,8 +8,8 @@ def requires_auth(func):
     @wraps(func)
     async def wrapper(*args, current_user: UserResponse = Depends(get_current_user), **kwargs):
         if not current_user:
-            raise NotAuthException  # Використовуємо ваш клас винятку
+            raise NotAuthException
 
-        return await func(*args, **kwargs)  # Викликаємо оригінальну функцію
+        return await func(*args, **kwargs)
 
     return wrapper
