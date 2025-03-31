@@ -59,7 +59,6 @@ from app.db.schemas.product import ProductCreate, ProductUpdate
 
 
 class ProductRepository(IProductRepository):
-    # @staticmethod
     async def create_product(self, db: AsyncSession, product_data: ProductCreate) -> Product:
         new_product = Product(**product_data.model_dump())
         db.add(new_product)

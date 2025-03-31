@@ -25,41 +25,13 @@ router = APIRouter()
 product_repo = ProductRepository()
 
 # product_service = ProductService()
-#-----------------------------------------------------------------------
-#First Version!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#-----------------------------------------------------------------------
-# def get_product_service(db: AsyncSession = Depends(get_db)) -> ProductService:
-#     return ProductService(product_repo=product_repo)
-#-----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
-#First GPT Version!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#-----------------------------------------------------------------------
 async def get_product_service(db: AsyncSession = Depends(get_db)) -> ProductService:
     redis_client = await get_redis()  # Отримуємо Redis
     product_repo = ProductRepository()
     return ProductService(product_repo=product_repo, redis_client=redis_client)
-#-----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
-#First Version!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#-----------------------------------------------------------------------
-# @router.post("/", response_model=ProductResponse)
-# async def create_product(
-#     product_data: ProductCreate,
-#     db: AsyncSession = Depends(get_db),
-#     product_service: ProductService = Depends(get_product_service),
-# ):
-#     product = await product_service.create(db, product_data)
-#     await cache_products(await ProductRepository(db).get_products(db))
-#     return product
-#-----------------------------------------------------------------------
-
-#-----------------------------------------------------------------------
-#First GPT Version!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#-----------------------------------------------------------------------
 @router.post("/", response_model=ProductResponse)
-# @requires_admin
 async def create_product(
     product_data: ProductCreate,
     # current_user: User,
@@ -68,6 +40,8 @@ async def create_product(
     product_service: ProductService = Depends(get_product_service),
     current_user: UserResponse = Depends(get_admin_user),
     ):
+    product_service = ProductService(product_repo, redis)
+    return await product_service.create_product(db, product_data)
 
     # if current_user.role != "admin":
     #     raise ForbiddenException()
@@ -81,24 +55,20 @@ async def create_product(
     #
     # await cache_products(products)
     # return product
-    product_service = ProductService(product_repo, redis)
-    return await product_service.create_product(db, product_data)
-
-
 @router.put("/products/{product_id}", response_model=ProductResponse)
-@requires_admin
 async def update_product(
     product_id: int,
     product_data: ProductUpdate,
     db: AsyncSession = Depends(get_db),
     redis: Redis = Depends(get_redis),
+    # admin_user: Depends(get_admin_user),
     product_service: ProductService = Depends(get_product_service)
 ):
     product_service = ProductService(product_repo, redis)
-    product = await product_service.update_product(db, product_id, product_data)
-    if not product:
+    updated_product = await product_service.update_product(db, product_id, product_data)
+    if not updated_product:
         raise NoResultFound("Product not found")
-    return product
+    return updated_product
     # return await product_service.update_product(db, product_id, updated_data)
 
 
@@ -112,10 +82,10 @@ async def delete_product(
     product_service: ProductService = Depends(get_product_service)
 ):
     product_service = ProductService(product_repo, redis)
-    deleted = await product_service.delete_product(db, product_id)
-    if not deleted:
+    deleted_product = await product_service.delete_product(db, product_id)
+    if not deleted_product:
         raise NoResultFound("Product not found")
-    return {"message": "Product deleted"}
+    return {"message": "Product deleted successfully"}
     # await product_service.delete_product(db, product_id)
     # return {"message": "Product deleted successfully"}
 #-----------------------------------------------------------------------
