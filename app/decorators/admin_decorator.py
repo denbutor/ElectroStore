@@ -52,8 +52,18 @@ from app.exceptions import ForbiddenException
 #
 #     return wrapper
 
-def requires_admin(func):
-    @wraps(func)
-    async def wrapper(*args, current_user: UserResponse = Depends(get_admin_user), **kwargs):
-        return await func(*args, current_user=current_user, **kwargs)
-    return wrapper
+# def requires_admin(func):
+#     @wraps(func)
+#     async def wrapper(*args, current_user: UserResponse = Depends(get_admin_user), **kwargs):
+#         return await func(*args, current_user=current_user, **kwargs)
+#     return wrapper
+
+def requires_admin(role: str):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user), **kwargs):
+            if user.role != role:
+                raise ForbiddenException(detail="Insufficient permissions")
+            return await func(*args, db=db, user=user, **kwargs)
+        return wrapper
+    return decorator

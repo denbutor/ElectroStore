@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 
 class UserBase(BaseModel):
@@ -15,6 +15,7 @@ class UserCreate(UserBase):
     nova_post_department: str
     password: str = Field(min_length=8)
 
+
     class Config:
         from_attributes = True
 
@@ -25,6 +26,8 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
     role: str
+
+    # model_config = ConfigDict(from_attributes=True)
 
     class Config:
         from_attributes = True

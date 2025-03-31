@@ -7,6 +7,7 @@ from app.db.models.product import Product
 from app.db.schemas.product import ProductResponse
 
 CACHE_EXPIRE = 600
+CACHE_PREFIX = "product:"
 
 
 async def cache_products(products: list[Product]):
@@ -27,3 +28,15 @@ async def get_cached_products():
     # except json.JSONDecodeError:
     #     return None
     return json.loads(data) if data else None
+
+
+async def cache_product(product: ProductResponse):
+    redis_client = await get_redis()
+    await redis_client.set(
+        f"{CACHE_PREFIX}{product.id}", json.dumps(product.model_dump()), ex=CACHE_EXPIRE
+    )
+
+async def get_cached_product(product_id: int) -> ProductResponse | None:
+    redis_client = await get_redis()
+    cached_data = await redis_client.get(f"{CACHE_PREFIX}{product_id}")
+    return ProductResponse(**json.loads(cached_data)) if cached_data else None

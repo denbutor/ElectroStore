@@ -12,6 +12,13 @@ async def get_redis():
         )
 
     return redis_client
+
+# async def get_redis():
+#     return redis.Redis.from_url(
+#         settings.REDIS_URL,
+#         decode_responses=True
+#     )
+
 # async def get_redis():
 #     global redis_client
 #     if redis_client is None:

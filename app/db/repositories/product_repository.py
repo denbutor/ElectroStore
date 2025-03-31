@@ -102,6 +102,28 @@ class ProductRepository(IProductRepository):
         await db.refresh(new_product)
         return new_product
 
+    async def update_product(self, db: AsyncSession, product_id: int, updated_data: ProductUpdate):
+        # product = await db.get(Product, product_id)
+        # if not product:
+        #     raise NoResultFound("Product not found")
+        product = await self.get_product_by_id(db, product_id)
+        if not product:
+            return None
+        for field, value in updated_data.model_dump(exclude_unset=True).items():
+            setattr(product, field, value)
+        await db.commit()
+        await db.refresh(product)
+        return product
+
+    # @staticmethod
+    async def delete_product(self, db: AsyncSession, product_id: int):
+        product = await self.get_product_by_id(db, product_id)
+        if not product:
+            return False
+        await db.delete(product)
+        await db.commit()
+        return True
+
     # @staticmethod
     async def get_products(self, db: AsyncSession):
         result = await db.execute(select(Product))
@@ -126,22 +148,7 @@ class ProductRepository(IProductRepository):
         return product
 
     # @staticmethod
-    async def update_product(self, db: AsyncSession, product_id: int, updated_data: ProductUpdate):
-        # product = await db.get(Product, product_id)
-        # if not product:
-        #     raise NoResultFound("Product not found")
-        product = await self.get_product_by_id(db, product_id)
-        for field, value in updated_data.model_dump(exclude_unset=True).items():
-            setattr(product, field, value)
-        await db.commit()
-        await db.refresh(product)
-        return product
 
-    # @staticmethod
-    async def delete_product(self, db: AsyncSession, product_id: int):
-        product = await self.get_product_by_id(db, product_id)
-        await db.delete(product)
-        await db.commit()
 # -----------------------------------------------------------------------
 # class ProductRepository(IProductRepository):
 #     async def create_product(self, db: AsyncSession, product_data: ProductCreate) -> Product:
