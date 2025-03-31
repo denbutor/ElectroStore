@@ -2,6 +2,17 @@ from typing import Any
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
+class UserUpdate(BaseModel):
+    email: EmailStr
+    name: str
+    surname: str
+    phone_number: str = Field(min_length=10, max_length=13)
+    city: str
+    nova_post_department: str
+    password: str = Field(min_length=8)
+
+    class Config:
+        from_attributes = True
 
 class UserBase(BaseModel):
     email: EmailStr
