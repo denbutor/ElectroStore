@@ -58,41 +58,6 @@ from app.core.security import get_current_user
 from app.db.schemas.product import ProductCreate, ProductUpdate
 
 
-# class ProductRepository:
-#     @staticmethod
-#     def create_product(db: Session, product_data: ProductCreate) -> Product:
-#         new_product = Product(**product_data.model_dump())
-#         db.add(new_product)
-#         db.commit()
-#         db.refresh(new_product)
-#         return new_product
-#
-#     @staticmethod
-#     def get_product_by_id(db: Session, product_id: int) -> Product | None:
-#         return db.query(Product).filter(Product.id == product_id).first()
-#
-#     @staticmethod
-#     def update_product(db: Session, product_id: int, product_data: ProductUpdate) -> Product | None:
-#         product = db.query(Product).filter(Product.id == product_id).first()
-#         if not product:
-#             return None
-#
-#         for key, value in product_data.model_dump(exclude_unset=True).items():
-#             setattr(product, key, value)
-#
-#         db.commit()
-#         db.refresh(product)
-#         return product
-#
-#     @staticmethod
-#     def delete_product(db: Session, product_id: int) -> bool:
-#         product = db.query(Product).filter(Product.id == product_id).first()
-#         if not product:
-#             return False
-#         db.delete(product)
-#         db.commit()
-#         return True
-
 class ProductRepository(IProductRepository):
     # @staticmethod
     async def create_product(self, db: AsyncSession, product_data: ProductCreate) -> Product:

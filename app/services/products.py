@@ -45,26 +45,6 @@ class ProductService:
             await redis_client.delete(f"{CACHE_PREFIX}{product_id}")
         return deleted
 
-    # @requires_admin
-    # async def create_product(
-    #         self, db: AsyncSession,
-    #         product_data: ProductCreate,
-    #         current_user: UserResponse,
-    # ) -> ProductResponse:
-    #     if current_user.role != "admin":
-    #         raise ForbiddenException(detail="Insufficient privileges")
-    #     new_product = await self.product_repo.create_product(db, product_data)
-    #     return ProductResponse.model_validate(new_product)
-    #
-    # @requires_admin
-    # async def update_product(self, db: AsyncSession, product_id: int, updated_data: ProductUpdate) -> ProductResponse:
-    #     product = await self.product_repo.update_product(db, product_id, updated_data)
-    #     return ProductResponse.model_validate(product)
-    #
-    # @requires_admin
-    # async def delete_product(self, db: AsyncSession, product_id: int):
-    #     await self.product_repo.delete_product(db, product_id)
-
     async def get_products(self, db: AsyncSession):
         return await self.product_repo.get_products(db)
 

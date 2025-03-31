@@ -36,6 +36,7 @@ async def cache_product(product: ProductResponse):
         f"{CACHE_PREFIX}{product.id}", json.dumps(product.model_dump()), ex=CACHE_EXPIRE
     )
 
+
 async def get_cached_product(product_id: int) -> ProductResponse | None:
     redis_client = await get_redis()
     cached_data = await redis_client.get(f"{CACHE_PREFIX}{product_id}")

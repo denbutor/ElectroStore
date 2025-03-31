@@ -39,7 +39,6 @@ async def get_product_service(db: AsyncSession = Depends(get_db)) -> ProductServ
     redis_client = await get_redis()  # Отримуємо Redis
     product_repo = ProductRepository()
     return ProductService(product_repo=product_repo, redis_client=redis_client)
-
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
