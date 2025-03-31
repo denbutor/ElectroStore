@@ -66,27 +66,52 @@ class ProductRepository(IProductRepository):
         await db.refresh(new_product)
         return new_product
 
-    async def update_product(self, db: AsyncSession, product_id: int, updated_data: ProductUpdate):
-        # product = await db.get(Product, product_id)
-        # if not product:
-        #     raise NoResultFound("Product not found")
-        product = await self.get_product_by_id(db, product_id)
-        if not product:
-            return None
-        for field, value in updated_data.model_dump(exclude_unset=True).items():
+    async def update_product(self, db: AsyncSession, product, product_data: ProductUpdate):
+        for field, value in product_data.dict(exclude_unset=True).items():
             setattr(product, field, value)
         await db.commit()
         await db.refresh(product)
         return product
 
-    # @staticmethod
-    async def delete_product(self, db: AsyncSession, product_id: int):
+    async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
         product = await self.get_product_by_id(db, product_id)
         if not product:
             return False
+
         await db.delete(product)
         await db.commit()
         return True
+
+    # async def delete_product(self, db: AsyncSession, name: str) -> bool:
+    #     product = await self.get_product_by_name(db, name)
+    #     if not product:
+    #         return False
+    #
+    #     await db.delete(product)
+    #     await db.commit()
+    #     return True
+
+    # async def update_product(self, db: AsyncSession, product_id: int, updated_data: ProductUpdate):
+    #     # product = await db.get(Product, product_id)
+    #     # if not product:
+    #     #     raise NoResultFound("Product not found")
+    #     product = await self.get_product_by_id(db, product_id)
+    #     if not product:
+    #         return None
+    #     for field, value in updated_data.model_dump(exclude_unset=True).items():
+    #         setattr(product, field, value)
+    #     await db.commit()
+    #     await db.refresh(product)
+    #     return product
+    #
+    # # @staticmethod
+    # async def delete_product(self, db: AsyncSession, product_id: int):
+    #     product = await self.get_product_by_id(db, product_id)
+    #     if not product:
+    #         return False
+    #     await db.delete(product)
+    #     await db.commit()
+    #     return True
 
     # @staticmethod
     async def get_products(self, db: AsyncSession):

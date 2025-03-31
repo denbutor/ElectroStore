@@ -73,7 +73,7 @@ async def update_product(
 
 
 
-@router.delete("/products/{product_id}")
+@router.delete("/products/{product_id}", response_model=ProductResponse)
 @requires_admin
 async def delete_product(
     product_id: int,

@@ -29,44 +29,41 @@ class ProductService:
         await cache_product(product_response)
         return product_response
 
-    # async def update_product(self, db: AsyncSession, product_id: int,
-    #                          update_data: ProductUpdate) -> ProductResponse | None:
-    #     product = await self.product_repo.update_product(db, product_id, update_data)
-    #     if not product:
-    #         return None
-    #     product_response = ProductResponse.model_validate(product)
-    #     await cache_product(product_response)
-    #     return product_response
     async def update_product(self, db: AsyncSession, product_id: int, product_data: ProductUpdate) -> ProductResponse | None:
         product = await self.product_repo.get_product_by_id(db, product_id)
         if not product:
             return None
 
-        for field, value in product_data.model_dump(exclude_unset=True).items():
-            setattr(product, field, value)
-
-        await db.commit()
-        await db.refresh(product)
-        return ProductResponse.model_validate(product)
+        updated_product = await self.product_repo.update_product(db, product, product_data)
+        return ProductResponse.model_validate(updated_product)
 
     async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
-        product = await self.product_repo.get_product_by_id(db, product_id)
-        if not product:
-            return False
+        return await self.product_repo.delete_product(db, product_id)
 
-        await db.delete(product)
-        await db.commit()
-        return True
-
-    # async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
-    #     deleted = await self.product_repo.delete_product(db, product_id)
-    #     if deleted:
-    #         redis_client = await get_redis()
-    #         await redis_client.delete(f"{CACHE_PREFIX}{product_id}")
-    #     return deleted
+    # async def update_product(self, db: AsyncSession, product_id: int, product_data: ProductUpdate) -> ProductResponse | None:
+    #     product = await self.product_repo.get_product_by_id(db, product_id)
+    #     if not product:
+    #         return None
     #
-    # async def get_products(self, db: AsyncSession):
-    #     return await self.product_repo.get_products(db)
+    #     for field, value in product_data.model_dump(exclude_unset=True).items():
+    #         setattr(product, field, value)
+    #
+    #     await db.commit()
+    #     await db.refresh(product)
+    #     return ProductResponse.model_validate(product)
+    #
+    # async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
+    #     product = await self.product_repo.get_product_by_id(db, product_id)
+    #     if not product:
+    #         return False
+    #     await db.delete(product)
+    #     await db.commit()
+    #     return True
+
+
+
+    async def get_products(self, db: AsyncSession):
+        return await self.product_repo.get_products(db)
 
     async def get_product_by_name(self, db: AsyncSession, name: str) -> ProductResponse | None:
         product = await self.product_repo.get_product_by_name(db, name)
