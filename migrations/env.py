@@ -15,6 +15,9 @@ from app.db.models.product import Product
 from app.db.models.order import Order
 from app.db.models.cart_item import CartItem
 from app.db.models.category import Category
+from app.db.models.order_item import OrderItem
+from app.db.models.review import Review
+from app.db.models.shipping import ShippingInfo
 
 # Налаштування логування
 config = context.config

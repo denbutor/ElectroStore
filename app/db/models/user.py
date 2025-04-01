@@ -1,12 +1,8 @@
-# from sqlalchemy import Enum as SQLAlchemyEnum
 from enum import Enum
 from sqlalchemy import Column, String, Integer, Enum as SQLEnum
-from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from app.db.base import Base
-
-# Base = declarative_base()
+from app.db.models.review import Review
 
 class UserRole(str, Enum):
     client = "client"
@@ -29,5 +25,6 @@ class User(Base):
     nova_post_department = Column(String, nullable=False)
     role = Column(SQLEnum(UserRole), default=UserRole.client, nullable=False)
 
-    orders = relationship("Order", back_populates="user")
-    cart_items = relationship("CartItem", back_populates="user")
+    orders = relationship("Order", back_populates="user", cascade="all, delete")
+    cart_items = relationship("CartItem", back_populates="user", cascade="all, delete")
+    reviews = relationship("Review", back_populates="user", cascade="all, delete")
