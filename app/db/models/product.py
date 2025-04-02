@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 from app.db.base import Base
+from app.db.models.order_item import OrderItem
 
 
 class Product(Base):
@@ -13,5 +14,6 @@ class Product(Base):
     price = Column(Numeric(10, 2), nullable=False)
 
     category = relationship("Category", back_populates="products")
+    cart_items = relationship("CartItem", back_populates="product", cascade="all, delete")
+    order_items = relationship("OrderItem", back_populates="product", cascade="all, delete")
     reviews = relationship("Review", back_populates="product", cascade="all, delete")
-    # order_items = relationship("OrderItem", back_populates="product", cascade="all, delete")

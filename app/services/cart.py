@@ -4,7 +4,7 @@ from _pytest.nodes import Item
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.cart_item import CartItem
-from app.db.repositories.cart_repository import CartRepository
+from app.db.repositories.cart_item_repository import CartRepository
 from app.db.schemas.cart_item import CartItemCreate, CartItemResponse
 
 

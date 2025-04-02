@@ -18,4 +18,4 @@ class ShippingInfo(Base):
     status = Column(SQLEnum(ShippingStatus), default=ShippingStatus.active, nullable=False)
     estimated_delivery = Column(DateTime, nullable=True)
 
-    # order = relationship("Order", back_populates="shipping_info")
+    order = relationship("Order", back_populates="shipping_info")

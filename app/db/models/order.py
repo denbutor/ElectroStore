@@ -3,6 +3,8 @@ from sqlalchemy import Column, String, Integer, ForeignKey,func, Numeric, DateTi
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 # from app.db.models.user import User
+# from app.db.models.order_item import OrderItem
+from app.db.models.shipping import ShippingInfo
 
 
 class OrderStatus(str, Enum):
@@ -15,11 +17,11 @@ class Order(Base):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    total_price = Column(Numeric(10, 2), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
+    total_price = Column(Numeric(10, 2), nullable=False, default=0)
     status = Column(SQLEnum(OrderStatus), default=OrderStatus.active, nullable=False)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     user = relationship("User", back_populates='orders')
-    # order_items = relationship("OrderItem", back_populates="order", cascade="all, delete")
-    # shipping_info = relationship("ShippingInfo", back_populates="order", uselist=False, cascade="all, delete")
+    order_items = relationship("OrderItem", back_populates="order", cascade="all, delete")
+    shipping_info = relationship("ShippingInfo", back_populates="order", uselist=False, cascade="all, delete")
