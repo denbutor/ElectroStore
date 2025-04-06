@@ -12,6 +12,15 @@ from sqlalchemy.exc import NoResultFound
 
 # from schemas import CartCreate, CartUpdate
 class CartRepository(ICartRepository):
+
+    async def get_cart_items(self, db: AsyncSession, user_id: int) -> list[CartItem]:
+        result = await db.execute(
+            select(CartItem)
+            .options(joinedload(CartItem.product))
+            .where(CartItem.cart.has(user_id=user_id))
+        )
+        return result.scalars().all()
+
     async def get_cart_by_user_id(self, user_id: int, db: AsyncSession) -> Cart | None:
         """Отримати кошик користувача"""
         result = await db.execute(select(Cart).where(Cart.user_id == user_id))

@@ -17,7 +17,7 @@ def get_category_service(db: AsyncSession = Depends(get_db)) -> CategoryService:
 @router.get("/", response_model=list[CategoryResponse])
 async def get_categories(
     db: AsyncSession = Depends(get_db),
-    category_service: CategoryService = Depends(get_category_service),  # Отримуємо сервіс через Depends
+    category_service: CategoryService = Depends(get_category_service),
 ):
     return await category_service.get_categories(db)
 
@@ -36,3 +36,4 @@ async def get_products_in_category_by_name(
     category_service: CategoryService = Depends(get_category_service),
 ):
     return await category_service.get_category_products_by_name(db, category_name)
+

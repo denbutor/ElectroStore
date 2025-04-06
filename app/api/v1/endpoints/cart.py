@@ -8,14 +8,14 @@ from app.services.cart import CartService
 from app.db.repositories.cart_repository import CartRepository
 from app.db.base import get_db
 router = APIRouter()
-
-cart_repo = CartRepository()
-cart_service = CartService(cart_repo)
-
 # def get_cart_repository(db: AsyncSession = Depends(get_db)) -> CartRepository:
 #     return CartRepository(db)
 # def get_cart_service(cart_repo: CartRepository = Depends(get_cart_repository)) -> CartService:
 #     return CartService(cart_repo)
+
+cart_repo = CartRepository()
+cart_service = CartService(cart_repo)
+
 
 def get_cart_service() -> CartService:
     return cart_service
@@ -24,10 +24,9 @@ def get_cart_service() -> CartService:
 @router.get("/cart", response_model=CartResponse)
 async def get_cart(
         db: AsyncSession = Depends(get_db),
-        current_user: User = Depends(get_current_user),  # Отримуємо поточного користувача
+        current_user: User = Depends(get_current_user),
         cart_service: CartService = Depends(get_cart_service)
 ):
-    # Використовуємо поточного користувача для отримання його корзини
     cart = await cart_service.get_cart(current_user.id, db)
 
     if not cart:
@@ -39,7 +38,7 @@ async def get_cart(
 @router.post("/cart/create", response_model=CartResponse)
 async def create_cart(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)  # Використовуємо поточного користувача з токену
+    current_user: User = Depends(get_current_user)
 ):
     return await cart_service.create_cart(current_user.id, db)
 
@@ -48,7 +47,7 @@ async def create_cart(
 async def add_to_cart(
     cart_item: CartItemCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)  # Використовуємо поточного користувача з токену
+    current_user: User = Depends(get_current_user)
 ):
     return await cart_service.add_to_cart(db, current_user.id, cart_item.product_id, cart_item.quantity)
 
@@ -57,7 +56,7 @@ async def add_to_cart(
 async def remove_from_cart(
     product_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)  # Використовуємо поточного користувача з токену
+    current_user: User = Depends(get_current_user)
 ):
     success = await cart_service.remove_from_cart(current_user.id, product_id, db)
     if not success:
@@ -67,7 +66,7 @@ async def remove_from_cart(
 @router.delete("/cart/clear", status_code=status.HTTP_204_NO_CONTENT)
 async def clear_cart(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)  # Використовуємо поточного користувача з токену
+    current_user: User = Depends(get_current_user)
 ):
     success = await cart_service.clear_cart(current_user.id, db)
     if not success:

@@ -18,14 +18,18 @@ class IOrderRepository(ABC):
     async def get_order_by_id(self, db: AsyncSession, order_id: int):
         pass
 
-    @abstractmethod
-    async def create_order(self, db: AsyncSession, order: Order, order_items: list[OrderItem]):
-        pass
+    # @abstractmethod
+    # async def create_order(self, db: AsyncSession, order: Order, order_items: list[OrderItem]):
+    #     pass
 
     @abstractmethod
     async def update_order(self, db: AsyncSession, order: Order):
         pass
+    #
+    # @abstractmethod
+    # async def delete_order(self, db: AsyncSession, order: Order):
+    #     pass
 
     @abstractmethod
-    async def delete_order(self, db: AsyncSession, order: Order):
+    async def create_order(self, db: AsyncSession, order: Order, order_items: list[OrderItem]) -> Order:
         pass

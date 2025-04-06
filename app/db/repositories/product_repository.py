@@ -77,15 +77,6 @@ class ProductRepository(IProductRepository):
         await db.refresh(product)
         return product
 
-    # async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
-    #     product = await self.get_product_by_id(db, product_id)
-    #     if not product:
-    #         raise NoResultFound()
-    #
-    #     await db.delete(product)
-    #     await db.commit()
-    #     return True
-
     async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
         result = await db.execute(select(Product).where(Product.id == product_id))
         product = result.scalar_one_or_none()
