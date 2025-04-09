@@ -52,7 +52,7 @@ async def add_to_cart(
     return await cart_service.add_to_cart(db, current_user.id, cart_item.product_id, cart_item.quantity)
 
 
-@router.delete("/cart/remove/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/cart/remove/{product_id}")
 async def remove_from_cart(
     product_id: int,
     db: AsyncSession = Depends(get_db),
@@ -63,7 +63,7 @@ async def remove_from_cart(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found")
 
 
-@router.delete("/cart/clear", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/cart/clear")
 async def clear_cart(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)

@@ -33,3 +33,7 @@ class IOrderRepository(ABC):
     @abstractmethod
     async def create_order(self, db: AsyncSession, order: Order, order_items: list[OrderItem]) -> Order:
         pass
+
+    @abstractmethod
+    async def delete_order(self, db: AsyncSession, order: Order):
+        pass

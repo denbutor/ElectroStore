@@ -37,8 +37,17 @@ class ProductService:
         updated_product = await self.product_repo.update_product(db, product, product_data)
         return ProductResponse.model_validate(updated_product)
 
+    # async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
+    #     return await self.product_repo.delete_product(db, product_id)
+
     async def delete_product(self, db: AsyncSession, product_id: int) -> bool:
-        return await self.product_repo.delete_product(db, product_id)
+        deleted = await self.product_repo.delete_product(db, product_id)
+
+        if deleted:
+            # Очищення кешу по ключу
+            await self.redis_client.delete(f"product:{product_id}")
+            await self.redis_client.delete("products")  # якщо кешується список продуктів
+        return deleted
 
     # async def update_product(self, db: AsyncSession, product_id: int, product_data: ProductUpdate) -> ProductResponse | None:
     #     product = await self.product_repo.get_product_by_id(db, product_id)

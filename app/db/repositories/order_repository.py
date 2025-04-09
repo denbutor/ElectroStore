@@ -79,6 +79,11 @@ class OrderRepository(IOrderRepository):
         await db.refresh(existing_order)
         return existing_order
 
+
+    async def delete_order(self, db: AsyncSession, order: Order):
+        await db.delete(order)
+        await db.commit()
+
 # class OrderRepository(IOrderRepository):
 #     async def get_all_orders(self, db: AsyncSession):
 #         result = await db.execute(

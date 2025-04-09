@@ -62,24 +62,35 @@ async def update_product(
     return updated_product
     # return await product_service.update_product(db, product_id, updated_data)
 
-
-
-@router.delete("/products/{product_id}", response_model=ProductResponse)
-# @requires_admin
+@router.delete("/products/{product_id}")
 async def delete_product(
     product_id: int,
     db: AsyncSession = Depends(get_db),
-    redis: Redis = Depends(get_redis),
+    redis_client: Redis = Depends(get_redis),
     product_service: ProductService = Depends(get_product_service),
     current_user: UserResponse = Depends(get_admin_user),
 ):
-    product_service = ProductService(product_repo, redis)
-    deleted_product = await product_service.delete_product(db, product_id)
-    if not deleted_product:
-        raise NoResultFound("Product not found")
-    return {"message": "Product deleted successfully"}
-    # await product_service.delete_product(db, product_id)
-    # return {"message": "Product deleted successfully"}
+    deleted = await product_service.delete_product(db, product_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+
+
+# @router.delete("/products/{product_id}", response_model=ProductResponse)
+# # @requires_admin
+# async def delete_product(
+#     product_id: int,
+#     db: AsyncSession = Depends(get_db),
+#     redis: Redis = Depends(get_redis),
+#     product_service: ProductService = Depends(get_product_service),
+#     current_user: UserResponse = Depends(get_admin_user),
+# ):
+#     product_service = ProductService(product_repo, redis)
+#     deleted_product = await product_service.delete_product(db, product_id)
+#     if not deleted_product:
+#         raise NoResultFound("Product not found")
+#     return {"message": "Product deleted successfully"}
+#     # await product_service.delete_product(db, product_id)
+#     # return {"message": "Product deleted successfully"}
 
 
 # @router.delete("/products")

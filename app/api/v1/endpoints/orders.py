@@ -1,3 +1,6 @@
+from redis import Redis
+
+from app.core.redis import get_redis
 from app.db.models.user import User
 from app.db.repositories.cart_repository import CartRepository
 from app.db.repositories.order_repository import OrderRepository
@@ -81,8 +84,20 @@ async def update_order(
 # async def delete_order(
 #     order_id: int,
 #     db: AsyncSession = Depends(get_db),
-#     current_user: User = Depends(get_current_user)
+#     current_user: UserResponse = Depends(get_admin_user)
 # ):
 #     # service = OrderService(OrderRepository())
 #     service = OrderService(OrderRepository(), CartRepository())
 #     return await service.delete_order(db, order_id, current_user)
+
+@router.delete("/{order_id}", status_code=status.HTTP_200_OK)
+async def delete_order(
+    order_id: int,
+    db: AsyncSession = Depends(get_db),
+    redis_client: Redis = Depends(get_redis),
+    # current_user: UserResponse = Depends(get_current_user),
+    current_user: UserResponse = Depends(get_admin_user)
+):
+    service = OrderService(OrderRepository(), CartRepository(), redis_client)
+    return await service.delete_order(db, order_id, current_user)
+

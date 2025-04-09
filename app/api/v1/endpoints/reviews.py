@@ -46,7 +46,11 @@ async def update_review(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 @router.delete("/product/{product_id}")
-async def delete_review(product_id: int, db: AsyncSession = Depends(get_db), user = Depends(get_current_user)):
+async def delete_review(
+        product_id: int,
+        db: AsyncSession = Depends(get_db),
+        user = Depends(get_current_user)
+):
     try:
         await review_service.delete_review(db, user.id, product_id)
         return { "detail": "Review deleted successfully" }

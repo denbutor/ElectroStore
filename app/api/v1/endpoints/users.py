@@ -32,7 +32,7 @@ async def update_my_info(
 
 
 
-@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/me")
 async def delete_my_account(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -73,7 +73,7 @@ async def update_user_by_admin(
         raise NotFoundUserException()
     return updated_user
 
-@router.delete("/admin/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/admin/users/{user_id}")
 async def delete_user_by_admin(
     user_id: int,
     db: AsyncSession = Depends(get_db),
