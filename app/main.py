@@ -1,13 +1,25 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.openapi.utils import get_openapi
+from fastapi.responses import JSONResponse
 
 from app.api.v1.endpoints import auth, cart, users, products, categories, cart_items, orders, admin, order_items, \
     shippings, reviews
 from app.core.config import settings
+from app.exceptions import TooManyRequestsException
 from app.services.caches.rate_limiter import RateLimiterMiddleware
 
 app = FastAPI()
+
+app.add_middleware(RateLimiterMiddleware)
+
+@app.exception_handler(TooManyRequestsException)
+async def too_many_requests_handler(request: Request, exc: TooManyRequestsException):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Too many requests"}
+    )
+
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
@@ -21,7 +33,6 @@ app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 app.include_router(shippings.router, prefix="/shipping", tags=["Shipping"])
 app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
-
 
 
 
