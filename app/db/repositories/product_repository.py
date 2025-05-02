@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.product import Product
 from app.db.repositories.iproduct_repository import IProductRepository
 from app.db.schemas.product import ProductCreate, ProductUpdate
+from app.exceptions import ProductNotFoundException
 from app.factories.product_factory import ProductFactory
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
@@ -70,7 +71,7 @@ class ProductRepository(IProductRepository):
         result = await db.execute(select(Product).where(Product.id == product.id).where(Product.id == product.id))
         product = result.scalar_one_or_none()
         if not product:
-            raise NoResultFound()
+            raise ProductNotFoundException()
         for field, value in product_data.model_dump(exclude_unset=True).items():
             setattr(product, field, value)
         await db.commit()
@@ -115,7 +116,7 @@ class ProductRepository(IProductRepository):
         result = await db.execute(select(Product).where(Product.id == product_id))
         product = result.scalar_one_or_none()
         if not product:
-            raise NoResultFound("Product not found")
+            raise ProductNotFoundException()
         return product
 
     # @staticmethod

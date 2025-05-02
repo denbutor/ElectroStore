@@ -12,4 +12,5 @@ class OrderItem(Base):
     price_at_purchase = Column(Numeric(10, 2), nullable=False, default=0)
 
     order = relationship("Order", back_populates="order_items")
-    product = relationship("Product")
+    product = relationship("Product", back_populates="order_items")
+

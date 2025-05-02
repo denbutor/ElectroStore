@@ -6,7 +6,7 @@ from app.core.redis import get_redis
 from app.db.models.product import Product
 from app.db.schemas.product import ProductResponse
 
-CACHE_EXPIRE = 600
+CACHE_EXPIRE = 60
 CACHE_PREFIX = "product:"
 
 

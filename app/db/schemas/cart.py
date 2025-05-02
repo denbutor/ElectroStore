@@ -1,19 +1,26 @@
 from pydantic import BaseModel, conint, condecimal
 from typing import List, Optional
 
+from app.db.schemas.product import ProductResponse
+
 
 class CartItemBase(BaseModel):
-    product_id: int
     quantity: conint(ge=1)  # Мінімум 1 товар у кошику
     sum_price: condecimal(max_digits=10, decimal_places=2)  # Два знаки після коми
+    product: ProductResponse
 
 
 class CartItemCreate(CartItemBase):
-    pass  # Використовується при додаванні товару в кошик
+    product_id: int
+
+    class Config:
+        from_attributes = True
 
 
 class CartItemResponse(CartItemBase):
     id: int
+    product_id: int
+
 
     class Config:
         from_attributes = True  # Працює з ORM (SQLAlchemy)

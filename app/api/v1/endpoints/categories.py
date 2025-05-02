@@ -29,7 +29,7 @@ async def get_categories(
 # ):
 #     return await category_service.get_category_products(db, category_id)
 
-@router.get("/category/name/{category_name}/products", response_model=list[ProductResponse])
+@router.get("/name/{category_name}/products", response_model=list[ProductResponse])
 async def get_products_in_category_by_name(
     category_name: str,
     db: AsyncSession = Depends(get_db),

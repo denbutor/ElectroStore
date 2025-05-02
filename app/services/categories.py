@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.repositories.category_repository import CategoryRepository
 from app.db.schemas.category import CategoryCreate, CategoryResponse
 from app.db.schemas.product import ProductResponse
+from app.exceptions import CategoryNotFoundException
 from app.services.caches.category_cache import cache_category_products_by_name, cache_categories, get_cached_categories, \
     get_cached_category_products_by_name
 
@@ -30,7 +31,7 @@ class CategoryService:
 
         category = await self.category_repo.get_category_with_products_by_name(db, category_name)
         if not category:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+            raise CategoryNotFoundException()
 
         # Кешуємо товари
         await cache_category_products_by_name(category_name, category.products)

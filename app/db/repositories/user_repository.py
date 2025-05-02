@@ -55,6 +55,8 @@ class UserRepository:
     @staticmethod
     async def get_user_by_id(db: AsyncSession, user_id: int):
         return db.query(User).filter(User.id == user_id).first()
+    # async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
+    #     return await db.execute(select(User).where(User.id == user_id))
 
     @staticmethod
     async def create_user(db: AsyncSession, user: User) -> User:

@@ -2,15 +2,24 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
 
-from app.api.v1.endpoints import auth, cart, users, products, categories, cart_items, orders, admin, order_items, \
-    shippings, reviews
+from app.api.v1.endpoints import auth, cart, users, products, categories, orders, admin, shippings, reviews
+
 from app.core.config import settings
 from app.exceptions import TooManyRequestsException
 from app.services.caches.rate_limiter import RateLimiterMiddleware
 
 app = FastAPI()
 
+# ✅ Додати CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # або ["*"] для тестів
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(RateLimiterMiddleware)
 
 @app.exception_handler(TooManyRequestsException)
@@ -26,11 +35,8 @@ app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(products.router, prefix="/products", tags=["Products"])
 app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(cart.router, prefix="/cart", tags=["Cart"])
-# app.include_router(cart_items.router, prefix="/cart_items", tags=["CartItem"])
-app.include_router(order_items.router, prefix="/order_items", tags=["OrderItem"])
 app.include_router(orders.router, prefix="/orders", tags=["Orders"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
-
 app.include_router(shippings.router, prefix="/shipping", tags=["Shipping"])
 app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
 
@@ -39,6 +45,7 @@ app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
+
     openapi_schema = get_openapi(
         title="ElectroStore API",
         version="1.0.0",
@@ -64,7 +71,6 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-app.add_middleware(RateLimiterMiddleware)
 
 if __name__ == '__main__':
     uvicorn.run(app, host=settings.HOST, port=settings.PORT, reload=True)

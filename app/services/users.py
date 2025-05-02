@@ -26,6 +26,9 @@ class UserService:
             raise NotFoundUserException()
         return UserResponse.model_validate(user)
 
+    # async def get_user(self, db: AsyncSession, user_id: int):
+    #     return await self.user_repo.get_user_by_id(db, user_id)
+
     async def get_users_by_email(self, db: AsyncSession, email: str) -> User:
         return await self.user_repo.get_user_by_email(db, email)
 

@@ -58,7 +58,7 @@ async def update_product(
     product_service = ProductService(product_repo, redis)
     updated_product = await product_service.update_product(db, product_id, product_data)
     if not updated_product:
-        raise NoResultFound("Product not found")
+        raise ProductNotFoundException()
     return updated_product
     # return await product_service.update_product(db, product_id, updated_data)
 
@@ -72,8 +72,7 @@ async def delete_product(
 ):
     deleted = await product_service.delete_product(db, product_id)
     if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-
+        raise ProductNotFoundException()
 
 # @router.delete("/products/{product_id}", response_model=ProductResponse)
 # # @requires_admin
@@ -110,7 +109,8 @@ async def delete_product(
 #-----------------------------------------------------------------------
 
 
-@router.get("/products/", response_model=list[ProductResponse])
+# @router.get("/products/", response_model=list[ProductResponse])
+@router.get("/", response_model=list[ProductResponse])
 async def get_products(
 
     db: AsyncSession = Depends(get_db),
@@ -136,7 +136,8 @@ async def get_product_by_name(
     await cache_products(product)
     return product
 
-@router.get("/products/search/{name}", response_model=list[ProductResponse])
+# @router.get("/products/search/{name}", response_model=list[ProductResponse])
+@router.get("/search/{name}", response_model=list[ProductResponse])
 async def search_products_by_name(
     name: str,
     db: AsyncSession = Depends(get_db),

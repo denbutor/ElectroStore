@@ -2,6 +2,7 @@ from pydantic import BaseModel, condecimal
 from typing import List
 from enum import Enum
 from datetime import datetime
+from app.db.schemas.product import ProductResponse  # ⬅️ додаємо
 
 class OrderStatus(str, Enum):
     active = "active"
@@ -18,6 +19,7 @@ class OrderItemCreate(OrderItemBase):
 class OrderItemResponse(OrderItemBase):
     id: int
     price_at_purchase: condecimal(max_digits=10, decimal_places=2)
+    product: ProductResponse  # ✅ додано вкладений продукт
 
     class Config:
         from_attributes = True
@@ -37,7 +39,7 @@ class OrderResponse(OrderBase):
     user_id: int
     total_price: condecimal(max_digits=10, decimal_places=2)
     created_at: datetime
-    order_items: List[OrderItemResponse]
+    order_items: List[OrderItemResponse]  # ✅ залишаємо
 
     class Config:
         from_attributes = True

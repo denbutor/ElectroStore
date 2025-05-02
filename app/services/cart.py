@@ -1,6 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
+from app.db.models.cart import Cart
 from app.db.models.cart_item import CartItem
 from app.db.repositories.cart_repository import CartRepository
 from app.db.repositories.icart_repository import ICartRepository
@@ -10,19 +12,25 @@ class CartService:
     def __init__(self, cart_repo: CartRepository):
         self.cart_repo = cart_repo
 
+    # async def get_cart(self, user_id: int, db: AsyncSession) -> CartResponse | None:
+    #     cart = await self.cart_repo.get_cart_by_user_id(user_id, db)
+    #     if not cart:
+    #         return None
+    #
+    #     cart_items = await db.execute(select(CartItem).where(CartItem.cart_id == cart.id))
+    #     items = cart_items.scalars().all()
+    #
+    #     return CartResponse(
+    #         id=cart.id,
+    #         user_id=cart.user_id,
+    #         cart_items=[CartItemResponse.model_validate(item) for item in items]
+    #     )
+
     async def get_cart(self, user_id: int, db: AsyncSession) -> CartResponse | None:
         cart = await self.cart_repo.get_cart_by_user_id(user_id, db)
         if not cart:
             return None
-
-        cart_items = await db.execute(select(CartItem).where(CartItem.cart_id == cart.id))
-        items = cart_items.scalars().all()
-
-        return CartResponse(
-            id=cart.id,
-            user_id=cart.user_id,
-            cart_items=[CartItemResponse.model_validate(item) for item in items]
-        )
+        return CartResponse.model_validate(cart)
 
     async def create_cart(self, user_id: int, db: AsyncSession) -> CartResponse:
         cart = await self.cart_repo.create_cart(user_id, db)
