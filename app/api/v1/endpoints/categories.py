@@ -10,7 +10,6 @@ router = APIRouter()
 
 category_repo=CategoryRepository()
 
-# Функція для створення CategoryService
 def get_category_service(db: AsyncSession = Depends(get_db)) -> CategoryService:
     return CategoryService(category_repo=category_repo)
 
@@ -20,14 +19,6 @@ async def get_categories(
     category_service: CategoryService = Depends(get_category_service),
 ):
     return await category_service.get_categories(db)
-
-# @router.get("/category/{category_id}/products", response_model=list[ProductResponse])
-# async def get_products_in_category(
-#     category_id: int,
-#     db: AsyncSession = Depends(get_db),
-#     category_service: CategoryService = Depends(get_category_service),
-# ):
-#     return await category_service.get_category_products(db, category_id)
 
 @router.get("/name/{category_name}/products", response_model=list[ProductResponse])
 async def get_products_in_category_by_name(

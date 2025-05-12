@@ -71,6 +71,8 @@ class ProductService:
         self.redis_client = redis_client
         self.cache_prefix = "product:"
 
+
+
     async def create_product(self, db: AsyncSession, product_data: ProductCreate) -> ProductResponse:
         new_product = await self.product_repo.create_product(db, product_data)
         product_response = ProductResponse.model_validate(new_product)
@@ -140,3 +142,12 @@ class ProductService:
     async def search_products_by_name(self, db: AsyncSession, name: str) -> list[ProductResponse]:
         products = await self.product_repo.search_products_by_name(db, name)
         return [ProductResponse.model_validate(product) for product in products]
+
+    async def get_product_by_id(self, db: AsyncSession, product_id: int) -> Product:
+        return await self.product_repo.get_product_by_id(db, product_id)
+    #     # products = await self.product_repo.get_products_by_id(db, product_id)
+    #     # return [ProductResponse.model_validate(product) for product in products]
+
+
+
+

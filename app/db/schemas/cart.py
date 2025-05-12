@@ -5,8 +5,8 @@ from app.db.schemas.product import ProductResponse
 
 
 class CartItemBase(BaseModel):
-    quantity: conint(ge=1)  # Мінімум 1 товар у кошику
-    sum_price: condecimal(max_digits=10, decimal_places=2)  # Два знаки після коми
+    quantity: conint(ge=1)
+    sum_price: condecimal(max_digits=10, decimal_places=2)
     product: ProductResponse
 
 
@@ -23,7 +23,7 @@ class CartItemResponse(CartItemBase):
 
 
     class Config:
-        from_attributes = True  # Працює з ORM (SQLAlchemy)
+        from_attributes = True
 
 
 class CartBase(BaseModel):
@@ -35,7 +35,7 @@ class CartBase(BaseModel):
 
 class CartResponse(CartBase):
     id: int
-    cart_items: List[CartItemResponse] = []  # Список товарів у кошику
+    cart_items: List[CartItemResponse] = []
 
     class Config:
         from_attributes = True

@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends
 from functools import wraps
 from app.db.schemas.user import UserResponse
 from app.core.security import get_current_user

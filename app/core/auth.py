@@ -1,83 +1,16 @@
-# from datetime import datetime, timedelta, timezone
-# from typing import TYPE_CHECKING
-#
-# from fastapi import Depends, HTTPException
-# from passlib.context import CryptContext
-# from sqlalchemy import select
-# from sqlalchemy.ext.asyncio import AsyncSession
-# from jose import jwt, JWTError
-# from starlette import status
-#
-# from app.core.config import settings
-# from app.db.models.user import User
-# from app.db.session import get_db
-# from app.dependencies import oauth2_scheme
-#
-# if TYPE_CHECKING:
-#     from app.db.repositories.user_repository import UserRepository
-#
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-#
-# class AuthService:
-#     def __init__(self, user_repo):
-#         self.user_repo = user_repo
-#
-#     async def hash_password(self, password: str) -> str:
-#         return pwd_context.hash(password)
-#
-#     async def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-#         return pwd_context.verify(plain_password, hashed_password)
-#
-#     async def create_access_token(self, data: dict, expires_delta: timedelta = timedelta(hours=1)) -> str:
-#         to_encode = data.copy()
-#         expire = datetime.now(timezone.utc) + expires_delta
-#         to_encode.update({"exp": expire})
-#         return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
-#
-#     async def authenticate_user(self, db: AsyncSession, email: str, password: str):
-#         user = await self.user_repo.get_user_by_email(db, email)
-#         if not user or not await self.verify_password(password, user.hashed_password):
-#             return None
-#         return await self.create_access_token({"sub": user.email})
-#
-# # async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
-# #     credentials_exception = HTTPException(
-# #         status_code=status.HTTP_401_UNAUTHORIZED,
-# #         detail="Could not validate credentials",
-# #         headers={"WWW-Authenticate": "Bearer"},
-# #     )
-# #     # credentials_exception = NotValidCredentialsException()
-# #     try:
-# #         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
-# #         user_id: str = payload.get("sub")
-# #         if not user_id:
-# #             raise credentials_exception
-# #     except JWTError:
-# #         raise credentials_exception
-# #
-# #     result = await db.execute(select(User).where(User.id == user_id))
-# #     user = result.scalars().first()
-# #     if not user:
-# #         raise credentials_exception
-# #     return user
-from fastapi import HTTPException, status, Depends
-from fastapi.security import OAuth2PasswordBearer
+
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
-from app.db.base import get_db
 from app.db.models.user import User
 from app.db.repositories.user_repository import UserRepository
 from app.db.schemas.user import UserCreate
 from app.core.config import settings
-# from app.core.config import Settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 class AuthService:
@@ -119,33 +52,3 @@ class AuthService:
         to_encode.update({"exp": expire, "sub": str(data["sub"]), "role": data.get("role", "user")})
         encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
         return encoded_jwt
-
-
-
-
-    # def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    #     credentials_exception = HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Could not validate credentials",
-    #         headers={"WWW-Authenticate": "Bearer"},
-    #     )
-    #     try:
-    #         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
-    #         user_id: int = payload.get("sub")
-    #         if user_id is None:
-    #             raise credentials_exception
-    #     except JWTError:
-    #         raise credentials_exception
-    #
-    #     user = db.query(User).filter(User.id == user_id).first()
-    #     if user is None:
-    #         raise credentials_exception
-    #     return user
-    #
-    # def admin_required(current_user: User = Depends(get_current_user)):
-    #     if current_user.role != "admin":
-    #         raise HTTPException(
-    #             status_code=status.HTTP_403_FORBIDDEN,
-    #             detail="You don't have enough permissions"
-    #         )
-    #     return current_user

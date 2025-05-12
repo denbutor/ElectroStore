@@ -25,12 +25,3 @@ class ICartRepository(ABC):
     @abstractmethod
     async def get_cart_by_user_id(self, user_id: int, db: AsyncSession) -> Cart | None:
         pass
-
-    # @abstractmethod
-    # async def get_cart_items(self, db: AsyncSession, user_id: int) -> list[CartItem]:
-    #     pass
-
-    # @abstractmethod
-    # async def get_cart_items(self, user_id: int, db: AsyncSession):
-    #     pass
-

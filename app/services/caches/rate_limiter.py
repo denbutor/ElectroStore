@@ -16,7 +16,6 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
 
         requests = await redis.get(key)
         if requests and int(requests) >= LIMIT:
-            # raise HTTPException(status_code=429, detail="Too many requests")
             raise TooManyRequestsException()
 
         pipe = redis.pipeline()

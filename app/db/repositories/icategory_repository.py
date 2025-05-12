@@ -10,10 +10,6 @@ class ICategoryRepository(ABC):
     async def get_categories(self, db: AsyncSession) -> list[Category]:
         pass
 
-    # @abstractmethod
-    # async def get_category_with_products(self, db: AsyncSession, category_id: int) -> Category | None:
-    #     pass
-
     @abstractmethod
     async def get_category_with_products_by_name(self, db: AsyncSession, category_name: str) -> Category | None:
         pass

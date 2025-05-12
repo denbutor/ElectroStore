@@ -12,7 +12,6 @@ router = APIRouter()
 # review_repo = ReviewRepository()
 
 
-# router = APIRouter(prefix="/reviews", tags=["Reviews"])
 review_service = ReviewService(ReviewRepository())
 
 @router.post("/", response_model=ReviewOut)

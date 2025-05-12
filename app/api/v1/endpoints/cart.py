@@ -10,10 +10,6 @@ from app.services.cart import CartService
 from app.db.repositories.cart_repository import CartRepository
 from app.db.base import get_db
 router = APIRouter()
-# def get_cart_repository(db: AsyncSession = Depends(get_db)) -> CartRepository:
-#     return CartRepository(db)
-# def get_cart_service(cart_repo: CartRepository = Depends(get_cart_repository)) -> CartService:
-#     return CartService(cart_repo)
 
 cart_repo = CartRepository()
 cart_service = CartService(cart_repo)

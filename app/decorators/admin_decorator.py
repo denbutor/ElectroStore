@@ -1,16 +1,25 @@
 from functools import wraps
 from typing import Callable
 
-from fastapi import Depends, Request, HTTPException, status
+from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.user import User
-from app.db.schemas.user import UserResponse
-from app.core.security import get_current_user, get_admin_user
+from app.core.security import get_current_user
 from app.db.session import get_db
-from app.dependencies import oauth2_scheme
 from app.exceptions import ForbiddenException
+
+
+def requires_admin(role: str):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user), **kwargs):
+            if user.role != role:
+                raise ForbiddenException(detail="Insufficient permissions")
+            return await func(*args, db=db, user=user, **kwargs)
+        return wrapper
+    return decorator
 
 # def requires_admin(func):
 #     @wraps(func)
@@ -57,13 +66,3 @@ from app.exceptions import ForbiddenException
 #     async def wrapper(*args, current_user: UserResponse = Depends(get_admin_user), **kwargs):
 #         return await func(*args, current_user=current_user, **kwargs)
 #     return wrapper
-
-def requires_admin(role: str):
-    def decorator(func):
-        @wraps(func)
-        async def wrapper(*args, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user), **kwargs):
-            if user.role != role:
-                raise ForbiddenException(detail="Insufficient permissions")
-            return await func(*args, db=db, user=user, **kwargs)
-        return wrapper
-    return decorator

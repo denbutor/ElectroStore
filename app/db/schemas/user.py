@@ -16,7 +16,6 @@ class UserUpdate(BaseModel):
 
 class UserBase(BaseModel):
     email: EmailStr
-    # email: str
 
 class UserCreate(UserBase):
     name: str
@@ -37,8 +36,11 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
     role: str
-
-    # model_config = ConfigDict(from_attributes=True)
+    name: str
+    surname: str
+    phone_number: str = Field(min_length=10, max_length=13)
+    city: str
+    nova_post_department: str
 
     class Config:
         from_attributes = True

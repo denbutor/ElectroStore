@@ -12,10 +12,9 @@ from app.services.caches.rate_limiter import RateLimiterMiddleware
 
 app = FastAPI()
 
-# ✅ Додати CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # або ["*"] для тестів
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

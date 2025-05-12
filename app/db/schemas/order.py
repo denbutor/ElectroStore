@@ -3,6 +3,8 @@ from typing import List
 from enum import Enum
 from datetime import datetime
 from app.db.schemas.product import ProductResponse  # ⬅️ додаємо
+from app.db.schemas.user import UserResponse
+
 
 class OrderStatus(str, Enum):
     active = "active"
@@ -30,6 +32,7 @@ class OrderBase(BaseModel):
 class OrderCreate(OrderBase):
     total_price: condecimal(max_digits=10, decimal_places=2)
     items: List[OrderItemCreate]
+    # user: UserResponse
 
 class OrderUpdate(OrderBase):
     status: OrderStatus
@@ -40,6 +43,7 @@ class OrderResponse(OrderBase):
     total_price: condecimal(max_digits=10, decimal_places=2)
     created_at: datetime
     order_items: List[OrderItemResponse]  # ✅ залишаємо
+    user: UserResponse
 
     class Config:
         from_attributes = True

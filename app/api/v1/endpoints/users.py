@@ -58,19 +58,6 @@ async def get_users_by_email(
     users = await user_service.get_users_by_email(db, email)
     return users
 
-# @router.put("/admin/users/{user_id}", response_model=UserResponse)
-# async def update_user_by_admin(
-#     user_id: int,
-#     user_update: UserUpdate,
-#     db: AsyncSession = Depends(get_db),
-#     # admin_user: User = Depends(get_admin_user),
-#     current_user: UserResponse = Depends(get_admin_user),
-# ):
-#     updated_user = await user_service.update_user(db, user_id, user_update)
-#     if not updated_user:
-#         raise NotFoundUserException()
-#     return updated_user
-
 @router.delete("/admin/users/{user_id}")
 async def delete_user_by_admin(
     user_id: int,

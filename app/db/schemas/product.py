@@ -1,5 +1,4 @@
 from typing import Any, Optional
-from uuid import UUID
 
 from pydantic import BaseModel, condecimal, Field, field_serializer
 
@@ -22,7 +21,6 @@ class ProductBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     description: str = Field(min_length=10, max_length=1000)
     price: condecimal(max_digits=10, decimal_places=2)
-    # price: float = Field(max_digits=10, decimal_places=2)
 
     @field_serializer("price")
     def serialize_price(self, price: condecimal) -> float:
